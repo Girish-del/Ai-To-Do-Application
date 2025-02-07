@@ -1,6 +1,7 @@
-import {db} from './db';
-import {todosTable} from './db/schema';
+import {db} from './db/index.js';
+import {todosTable} from './db/schema.js';
 import {ilike, eq} from 'drizzle-orm';
+import { real } from 'drizzle-orm/mysql-core';
 import OpenAI from 'openai';
 import readlineSync from 'readline-sync';
 
@@ -13,12 +14,12 @@ async function getAllTodos(){
 }
 
 async function createTodo(todo){
-    const [todo] = await db.insert(todosTable).values({
+    const [result] = await db.insert(todosTable).values({
         todo,
     }).returning({
         id: todosTable.id,
     });
-    return todo.id;
+    return result.id;
 }
 
 async function deleteTodoById(id){
@@ -73,3 +74,40 @@ START
 `;
 
 const messages = [{role: 'system', content: SYSTEM_PROMPT}];
+
+while(true){
+    const query = readlineSync.question('>>');
+    const userMessage = {
+        type: 'user',
+        user: query,
+    };
+    messages.push({role: 'user', content: JSON.stringify(userMessage)});
+
+    while(true){
+        const chat = await client.chat.completions.create({
+            model: 'gpt-4o-mini',
+            messages: messages,
+            response_format: {type: 'json_object'},
+        });
+        const result = chat.choices[0].message.content;
+        messages.push({role: 'assistant', content: result});
+
+        const action = JSON.parse(result);
+
+        if(action.type === 'output'){
+            console.log(`${action.output}`);
+            break;
+        }
+        else if (action.type === 'action'){
+            const fn = tools[action.function];
+            if(!fn) throw new Error('Invalid Tool Call');
+            const observation = await fn(action.input);
+            const observationMessage = {
+                type: 'observation',
+                observation: observation,
+            };
+            messages.push({role: 'developer', content: JSON.stringify(observationMessage)});
+        }
+
+    }
+}

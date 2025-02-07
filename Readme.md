@@ -14,9 +14,18 @@ I have done same as the documentation. Volla !!!!!
 
 
 ## If you want to Execute this Project: 
+(* Pro Tip* : Whenever you are trying to run these commands make sure that your Docker container is up and running or duing the migration step and studio step it will throw an error) 
+
+To Start Docker Conainer : 
+
+docker compose up -d
+
 1. pnpm run generate
 2. pnpm run migrate
 3. pnpm run studio -- To launch the studio
+
+## Run the Project
+node index.js
 
 ## Linking OpenAi to the project
 
