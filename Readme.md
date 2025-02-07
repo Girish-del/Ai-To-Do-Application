@@ -2,6 +2,18 @@ Start to build the project by executing the command :
 
 pnpm install 
 
+## Run the Project
+node index.js
+
+
+// Change the OpenAI key with yours in the .env folder. I have deleted my OPENAI key. 
+
+
+(How you can use this project. See at the end....) 
+
+
+
+
 ## Things used in the project 
 
 - Drizzle ORM 
@@ -24,8 +36,6 @@ docker compose up -d
 2. pnpm run migrate
 3. pnpm run studio -- To launch the studio
 
-## Run the Project
-node index.js
 
 ## Linking OpenAi to the project
 
@@ -40,3 +50,21 @@ Paste the key in the env folder in the project.
 Follow the Documentation. 
 
 And you are Done Vollaaaaaa!!!!!!!!!!!!
+
+
+
+
+#### HOW CAN YOU USE IT ?? 
+
+User: I want to do leetcode today. 
+User: I want to complete project on AI today.
+User: I want to go running tomorrow.
+
+User: Are there any tasks pending for me today or tomorrow ? 
+
+See results for yourself and play a little / 
+
+
+
+THANK YOU FOR READING. I WILL TAKE MY LEAVE TODAY. READ MY OTHER PROJECT TOO...... 
+!!!!!!!!!!!!!!!!!!!!THANK YOU !!!!!!!!!!!!!!!!!!!!!!!!!!!!!

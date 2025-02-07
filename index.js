@@ -92,10 +92,6 @@ while (true) {
         const result = chat.choices[0].message.content;
         messages.push({ role: 'assistant', content: result });
 
-        console.log(`\n\n------------START AI----------`)
-        console.log(result);
-        console.log(`\n\n------------END AI----------`)
-
         const action = JSON.parse(result);
 
         if (action.type === 'output') {
