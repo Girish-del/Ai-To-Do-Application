@@ -1,6 +1,6 @@
-import {db} from './db/index.js';
-import {todosTable} from './db/schema.js';
-import {ilike, eq} from 'drizzle-orm';
+import { db } from './db/index.js';
+import { todosTable } from './db/schema.js';
+import { ilike, eq } from 'drizzle-orm';
 import { real } from 'drizzle-orm/mysql-core';
 import OpenAI from 'openai';
 import readlineSync from 'readline-sync';
@@ -8,12 +8,12 @@ import readlineSync from 'readline-sync';
 // const openai = new OpenAI(); Documentation line
 const client = new OpenAI();
 
-async function getAllTodos(){
+async function getAllTodos() {
     const todos = await db.select().from(todosTable);
     return todos;
 }
 
-async function createTodo(todo){
+async function createTodo(todo) {
     const [result] = await db.insert(todosTable).values({
         todo,
     }).returning({
@@ -22,12 +22,12 @@ async function createTodo(todo){
     return result.id;
 }
 
-async function deleteTodoById(id){
+async function deleteTodoById(id) {
     await db.delete(todosTable).where(eq(todosTable.id, id));
 }
 
-async function searchTodo(search){
-    const todos = await db.select().from(todosTable).where(ilike(todosTable.todo, search));
+async function searchTodo(search) {
+    const todos = await db.select().from(todosTable).where(ilike(todosTable.todo, `%${search}%`));
     return todos;
 }
 
@@ -73,40 +73,44 @@ START
 {"type": "output", "output": "Your todo has list has been added successfully."}
 `;
 
-const messages = [{role: 'system', content: SYSTEM_PROMPT}];
+const messages = [{ role: 'system', content: SYSTEM_PROMPT }];
 
-while(true){
+while (true) {
     const query = readlineSync.question('>>');
     const userMessage = {
         type: 'user',
         user: query,
     };
-    messages.push({role: 'user', content: JSON.stringify(userMessage)});
+    messages.push({ role: 'user', content: JSON.stringify(userMessage) });
 
-    while(true){
+    while (true) {
         const chat = await client.chat.completions.create({
             model: 'gpt-4o-mini',
             messages: messages,
-            response_format: {type: 'json_object'},
+            response_format: { type: 'json_object' },
         });
         const result = chat.choices[0].message.content;
-        messages.push({role: 'assistant', content: result});
+        messages.push({ role: 'assistant', content: result });
+
+        console.log(`\n\n------------START AI----------`)
+        console.log(result);
+        console.log(`\n\n------------END AI----------`)
 
         const action = JSON.parse(result);
 
-        if(action.type === 'output'){
+        if (action.type === 'output') {
             console.log(`${action.output}`);
             break;
         }
-        else if (action.type === 'action'){
+        else if (action.type === 'action') {
             const fn = tools[action.function];
-            if(!fn) throw new Error('Invalid Tool Call');
+            if (!fn) throw new Error('Invalid Tool Call');
             const observation = await fn(action.input);
             const observationMessage = {
                 type: 'observation',
                 observation: observation,
             };
-            messages.push({role: 'developer', content: JSON.stringify(observationMessage)});
+            messages.push({ role: 'developer', content: JSON.stringify(observationMessage) });
         }
 
     }
