@@ -59,7 +59,7 @@ And you are Done Vollaaaaaa!!!!!!!!!!!!
 1. User: I want to do leetcode today. 
 2. User: I want to complete project on AI today.    
 3. User: I want to go running tomorrow.       
-4. User: I am going shopping tomorrow and my tomorrows dinner will be pasta. Relatively add all the required ingredients for making pasta under one sub-task. 
+4. User: I will go shopping tomorrow and my tomorrows dinner will be pasta. Relatively add all the required ingredients for making pasta under one sub-task. 
 5. User: Are there any tasks pending for me today or tomorrow ? 
 
 See results for yourself and play a little / 
